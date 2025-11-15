@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 
 const EyeIcon: React.FC<{ className?: string }> = (props) => (
@@ -28,6 +28,7 @@ const CheckIcon: React.FC<{ className?: string }> = (props) => (
 
 const AuthModal: React.FC = () => {
     const { isAuthModalOpen, closeAuthModal, login, register } = useContext(AuthContext);
+    const [isRendered, setIsRendered] = useState(false);
     const [isLoginView, setIsLoginView] = useState(true);
 
     const [name, setName] = useState('');
@@ -37,7 +38,19 @@ const AuthModal: React.FC = () => {
     const [rememberMe, setRememberMe] = useState(true);
     const [error, setError] = useState('');
 
-    if (!isAuthModalOpen) return null;
+    useEffect(() => {
+        if (isAuthModalOpen) {
+            setIsRendered(true);
+        }
+    }, [isAuthModalOpen]);
+
+    const onAnimationEnd = () => {
+        if (!isAuthModalOpen) {
+            setIsRendered(false);
+        }
+    };
+
+    if (!isRendered) return null;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -172,8 +185,17 @@ const AuthModal: React.FC = () => {
     );
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center animate-fadeIn p-4" onClick={closeAuthModal} role="dialog" aria-modal="true">
-            <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+        <div 
+            className={`fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 ${isAuthModalOpen ? 'animate-fadeIn' : 'animate-fadeOut'}`} 
+            onClick={closeAuthModal} 
+            onAnimationEnd={onAnimationEnd}
+            role="dialog" 
+            aria-modal="true"
+        >
+            <div 
+                className={`bg-white rounded-2xl shadow-xl p-8 md:p-10 w-full max-w-sm ${isAuthModalOpen ? 'animate-scaleIn' : 'animate-scaleOut'}`}
+                onClick={(e) => e.stopPropagation()}
+            >
                 {isLoginView ? <LoginView /> : <RegisterView />}
             </div>
         </div>

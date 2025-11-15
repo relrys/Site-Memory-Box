@@ -1,4 +1,5 @@
 
+
 export interface Plan {
   name: string;
   price: string;
@@ -36,4 +37,15 @@ export interface Product {
 
 export interface CartItem extends Product {
   quantity: number;
+}
+
+export interface OrderItem extends CartItem {}
+
+export interface Order {
+  id: string;
+  userId: string;
+  userName: string;
+  items: OrderItem[];
+  total: number;
+  date: string; // ISO string
 }

@@ -60,17 +60,29 @@ const featureDescriptions: { [key: string]: string } = {
   'Mimos e adesivos extras': "Pequenas surpresas que encantam! Receba adesivos temáticos e outros brindes exclusivos em sua caixinha todo mês."
 };
 
+const CheckIcon: React.FC<{ className?: string }> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+);
+
+
 const PlanCard: React.FC<{ plan: Plan; isSelected: boolean; onSelect: () => void; }> = ({ plan, isSelected, onSelect }) => {
   const isPopular = plan.popular;
 
   return (
     <div 
-      className={`relative border-2 p-8 rounded-2xl transition-all duration-300 transform cursor-pointer ${isSelected ? 'border-brand-dark scale-105 shadow-lg bg-white' : (isPopular ? 'bg-white border-gray-200' : 'bg-brand-secondary border-transparent')}`}
+      className={`relative border-2 p-8 rounded-2xl transition-all duration-300 transform cursor-pointer ${isSelected ? 'border-teal-500 scale-105 shadow-xl bg-white' : (isPopular ? 'bg-white border-gray-200' : 'bg-brand-secondary border-transparent')}`}
       onClick={onSelect}
     >
       {isPopular && !isSelected && (
         <div className="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-brand-dark text-white text-sm font-semibold px-4 py-1 rounded-full z-10">
           MAIS POPULAR
+        </div>
+      )}
+      {isSelected && (
+        <div className="absolute top-[-1rem] right-[-1rem] bg-teal-500 text-white rounded-full h-8 w-8 flex items-center justify-center shadow-lg animate-scaleIn">
+            <CheckIcon className="w-5 h-5" />
         </div>
       )}
       <h3 className="text-2xl font-bold text-brand-dark text-center mb-2">{plan.name}</h3>
@@ -96,7 +108,13 @@ const PlanCard: React.FC<{ plan: Plan; isSelected: boolean; onSelect: () => void
       </ul>
       <button 
         onClick={onSelect}
-        className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${isSelected || isPopular ? 'bg-brand-dark text-white hover:bg-gray-800' : 'bg-white text-brand-dark hover:bg-gray-100'}`}
+        className={`w-full font-bold py-3 px-6 rounded-lg transition-colors ${
+            isSelected 
+                ? 'bg-teal-500 text-white hover:bg-teal-600' 
+                : isPopular 
+                ? 'bg-brand-dark text-white hover:bg-gray-800' 
+                : 'bg-white text-brand-dark hover:bg-gray-100'
+        }`}
       >
         {isSelected ? 'Plano Selecionado' : 'Selecionar Plano'}
       </button>

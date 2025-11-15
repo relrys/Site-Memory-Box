@@ -1,5 +1,5 @@
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
-import { CartItem, Product } from '../types';
+import { CartItem, Product, Order, User } from '../types';
 
 interface CartContextType {
     cartItems: CartItem[];
@@ -10,6 +10,7 @@ interface CartContextType {
     isCartOpen: boolean;
     openCart: () => void;
     closeCart: () => void;
+    checkout: (user: User) => void;
 }
 
 export const CartContext = createContext<CartContextType>({} as CartContextType);
@@ -62,11 +63,35 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCartItems([]);
     };
 
+    const checkout = (user: User) => {
+        if (cartItems.length === 0) return;
+
+        const newOrder: Order = {
+            id: `order-${Date.now()}`,
+            userId: user.id,
+            userName: user.name,
+            items: cartItems,
+            total: cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
+            date: new Date().toISOString(),
+        };
+
+        try {
+            const existingOrders: Order[] = JSON.parse(localStorage.getItem('memoryBoxOrders') || '[]');
+            existingOrders.unshift(newOrder);
+            localStorage.setItem('memoryBoxOrders', JSON.stringify(existingOrders));
+        } catch (error) {
+            console.error("Failed to save order:", error);
+            localStorage.setItem('memoryBoxOrders', JSON.stringify([newOrder]));
+        }
+
+        clearCart();
+    };
+
     const openCart = () => setCartOpen(true);
     const closeCart = () => setCartOpen(false);
 
     return (
-        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, isCartOpen, openCart, closeCart }}>
+        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart, isCartOpen, openCart, closeCart, checkout }}>
             {children}
         </CartContext.Provider>
     );

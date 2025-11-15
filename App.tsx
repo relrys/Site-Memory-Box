@@ -16,6 +16,10 @@ import CartModal from './components/CartModal';
 import PhotoPackageSelector from './components/PhotoPackageSelector';
 import PhotoPackageCreator from './components/PhotoPackageCreator';
 import PhotoPackage15x20Creator from './components/PhotoPackage15x20Creator';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminDashboard from './components/admin/AdminDashboard';
+import AdminCustomers from './components/admin/AdminCustomers';
+import AdminOrders from './components/admin/AdminOrders';
 
 const ScrollToHashElement = () => {
   const location = useLocation();
@@ -70,6 +74,12 @@ const App: React.FC = () => {
             <Route path="/pacote-foto-imas" element={<PhotoPackageSelector />} />
             <Route path="/pacote-10x15" element={<PhotoPackageCreator />} />
             <Route path="/pacote-15x20" element={<PhotoPackage15x20Creator />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="customers" element={<AdminCustomers />} />
+              <Route path="orders" element={<AdminOrders />} />
+            </Route>
           </Routes>
         </div>
       </CartProvider>

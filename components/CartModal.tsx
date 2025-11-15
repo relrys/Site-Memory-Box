@@ -1,29 +1,49 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { CartContext } from '../contexts/CartContext';
 import { AuthContext } from '../contexts/AuthContext';
 
 const CartModal: React.FC = () => {
-    const { isCartOpen, closeCart, cartItems, updateQuantity, removeFromCart, clearCart } = useContext(CartContext);
-    const { isAuthenticated, openAuthModal } = useContext(AuthContext);
+    const { isCartOpen, closeCart, cartItems, updateQuantity, removeFromCart, checkout } = useContext(CartContext);
+    const { isAuthenticated, openAuthModal, user } = useContext(AuthContext);
+    const [isRendered, setIsRendered] = useState(false);
 
-    if (!isCartOpen) return null;
+    useEffect(() => {
+        if (isCartOpen) {
+            setIsRendered(true);
+        }
+    }, [isCartOpen]);
+
+    const onAnimationEnd = () => {
+        if (!isCartOpen) {
+            setIsRendered(false);
+        }
+    };
+
+    if (!isRendered) return null;
 
     const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
 
     const handleCheckout = () => {
-        if (!isAuthenticated) {
+        if (!isAuthenticated || !user) {
             closeCart();
             openAuthModal();
         } else {
+            checkout(user);
             alert(`Compra finalizada com sucesso! Total: R$${total}`);
-            clearCart();
             closeCart();
         }
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end animate-fadeIn" onClick={closeCart}>
-            <div className="bg-white shadow-xl w-full max-w-md h-full flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div 
+            className={`fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end ${isCartOpen ? 'animate-fadeIn' : 'animate-fadeOut'}`} 
+            onClick={closeCart}
+            onAnimationEnd={onAnimationEnd}
+        >
+            <div 
+                className={`bg-white shadow-xl w-full max-w-md h-full flex flex-col ${isCartOpen ? 'animate-slideInRight' : 'animate-slideOutRight'}`}
+                onClick={(e) => e.stopPropagation()}
+            >
                 <div className="flex justify-between items-center p-6 border-b">
                     <h2 className="text-2xl font-bold text-brand-dark">Seu Carrinho</h2>
                     <button onClick={closeCart} className="text-gray-400 hover:text-gray-600">
