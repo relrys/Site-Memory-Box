@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../contexts/CartContext';
 import { AuthContext } from '../contexts/AuthContext';
 
 const CartModal: React.FC = () => {
-    const { isCartOpen, closeCart, cartItems, updateQuantity, removeFromCart, checkout } = useContext(CartContext);
+    const { isCartOpen, closeCart, cartItems, updateQuantity, removeFromCart } = useContext(CartContext);
     const { isAuthenticated, openAuthModal, user } = useContext(AuthContext);
     const [isRendered, setIsRendered] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (isCartOpen) {
@@ -28,9 +30,8 @@ const CartModal: React.FC = () => {
             closeCart();
             openAuthModal();
         } else {
-            checkout(user);
-            alert(`Compra finalizada com sucesso! Total: R$${total}`);
             closeCart();
+            navigate('/checkout');
         }
     };
 

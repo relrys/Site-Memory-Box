@@ -1,5 +1,5 @@
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
-import { CartItem, Product, Order, User } from '../types';
+import { CartItem, Product, Order, User, Address } from '../types';
 
 interface CartContextType {
     cartItems: CartItem[];
@@ -10,7 +10,7 @@ interface CartContextType {
     isCartOpen: boolean;
     openCart: () => void;
     closeCart: () => void;
-    checkout: (user: User) => void;
+    checkout: (user: User, address: Address, finalTotal: number) => void;
 }
 
 export const CartContext = createContext<CartContextType>({} as CartContextType);
@@ -63,7 +63,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCartItems([]);
     };
 
-    const checkout = (user: User) => {
+    const checkout = (user: User, address: Address, finalTotal: number) => {
         if (cartItems.length === 0) return;
 
         const newOrder: Order = {
@@ -71,8 +71,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             userId: user.id,
             userName: user.name,
             items: cartItems,
-            total: cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
+            total: finalTotal,
             date: new Date().toISOString(),
+            address: address,
         };
 
         try {

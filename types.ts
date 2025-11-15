@@ -41,6 +41,16 @@ export interface CartItem extends Product {
 
 export interface OrderItem extends CartItem {}
 
+export interface Address {
+  cep: string;
+  street: string;
+  number: string;
+  complement?: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}
+
 export interface Order {
   id: string;
   userId: string;
@@ -48,4 +58,5 @@ export interface Order {
   items: OrderItem[];
   total: number;
   date: string; // ISO string
+  address: Address;
 }

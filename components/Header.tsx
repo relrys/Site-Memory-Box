@@ -34,6 +34,15 @@ const Header: React.FC = () => {
              {isAuthenticated && user ? (
                <div className="flex items-center space-x-4">
                  <span className="font-semibold text-brand-text">Olá, {user.name.split(' ')[0]}</span>
+                 {user.email === 'admin@memorybox.com' ? (
+                    <Link to="/admin/dashboard" className="text-white bg-red-600 font-semibold px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">
+                        Painel Admin
+                    </Link>
+                 ) : (
+                    <Link to="/cliente/dashboard" className="text-brand-dark font-semibold px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm">
+                        Minha Conta
+                    </Link>
+                 )}
                  <button onClick={logout} className="text-brand-dark font-semibold px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
                     Sair
                  </button>

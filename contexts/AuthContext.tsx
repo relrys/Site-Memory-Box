@@ -8,6 +8,7 @@ interface AuthContextType {
   logout: () => void;
   register: (name: string, email: string, pass: string) => boolean;
   subscribe: (planName: string) => void;
+  updateUser: (updatedData: Partial<User & { newPassword?: string }>) => boolean;
   isAuthModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
@@ -81,13 +82,42 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateUser = (updatedData: Partial<User & { newPassword?: string }>): boolean => {
+    if (!user) return false;
+
+    let success = false;
+    const storedUsers = JSON.parse(localStorage.getItem('memoryBoxUsers') || '[]');
+    const userIndex = storedUsers.findIndex((u: any) => u.id === user.id);
+
+    if (userIndex !== -1) {
+        const currentUserData = storedUsers[userIndex];
+        
+        // Update user data
+        const updatedUserForList = {
+            ...currentUserData,
+            name: updatedData.name ?? currentUserData.name,
+            email: updatedData.email ?? currentUserData.email,
+            password: updatedData.newPassword ? updatedData.newPassword : currentUserData.password
+        };
+        storedUsers[userIndex] = updatedUserForList;
+        localStorage.setItem('memoryBoxUsers', JSON.stringify(storedUsers));
+
+        // Update session user
+        const { password, ...userToStore } = updatedUserForList;
+        setUser(userToStore);
+        localStorage.setItem('memoryBoxUser', JSON.stringify(userToStore));
+        success = true;
+    }
+    return success;
+  };
+
   const openAuthModal = () => setAuthModalOpen(true);
   const closeAuthModal = () => setAuthModalOpen(false);
   
   const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, register, subscribe, isAuthModalOpen, openAuthModal, closeAuthModal }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, register, subscribe, updateUser, isAuthModalOpen, openAuthModal, closeAuthModal }}>
       {children}
     </AuthContext.Provider>
   );

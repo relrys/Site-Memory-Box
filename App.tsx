@@ -20,6 +20,11 @@ import AdminLayout from './components/admin/AdminLayout';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminCustomers from './components/admin/AdminCustomers';
 import AdminOrders from './components/admin/AdminOrders';
+import ClientLayout from './components/client/ClientLayout';
+import ClientDashboard from './components/client/ClientDashboard';
+import ClientOrders from './components/client/ClientOrders';
+import ClientProfile from './components/client/ClientProfile';
+import CheckoutPage from './components/checkout/CheckoutPage';
 
 const ScrollToHashElement = () => {
   const location = useLocation();
@@ -74,11 +79,18 @@ const App: React.FC = () => {
             <Route path="/pacote-foto-imas" element={<PhotoPackageSelector />} />
             <Route path="/pacote-10x15" element={<PhotoPackageCreator />} />
             <Route path="/pacote-15x20" element={<PhotoPackage15x20Creator />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="customers" element={<AdminCustomers />} />
               <Route path="orders" element={<AdminOrders />} />
+            </Route>
+            <Route path="/cliente" element={<ClientLayout />}>
+              <Route index element={<ClientDashboard />} />
+              <Route path="dashboard" element={<ClientDashboard />} />
+              <Route path="pedidos" element={<ClientOrders />} />
+              <Route path="meus-dados" element={<ClientProfile />} />
             </Route>
           </Routes>
         </div>
