@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import type { Plan } from '../types';
+import { AuthContext } from '../contexts/AuthContext';
+
 
 const plans: Plan[] = [
   {
@@ -104,8 +106,21 @@ const PlanCard: React.FC<{ plan: Plan; isSelected: boolean; onSelect: () => void
 
 
 const Plans: React.FC = () => {
+  const { isAuthenticated, openAuthModal, user, subscribe } = useContext(AuthContext);
   const popularPlan = plans.find(p => p.popular);
   const [selectedPlanName, setSelectedPlanName] = useState<string>(popularPlan ? popularPlan.name : plans[0].name);
+
+  const handleSelectPlan = (planName: string) => {
+    setSelectedPlanName(planName);
+    if (!isAuthenticated) {
+        openAuthModal();
+    } else {
+        subscribe(planName);
+        alert(`Parabéns! Você assinou o ${planName}.`);
+    }
+  }
+  
+  const isSubscribedToSelected = user?.subscription === selectedPlanName;
 
   return (
     <section id="plans" className="py-20 bg-brand-light">
@@ -120,12 +135,20 @@ const Plans: React.FC = () => {
               key={index} 
               plan={plan} 
               isSelected={selectedPlanName === plan.name}
-              onSelect={() => setSelectedPlanName(plan.name)}
+              onSelect={() => handleSelectPlan(plan.name)}
             />
           ))}
         </div>
         <div className="mt-12 text-center max-w-3xl mx-auto min-h-[120px]">
-            {selectedPlanName === 'Plano Essencial' && (
+            {user?.subscription && (
+                 <div className="p-6 bg-teal-50 border-2 border-teal-200 text-teal-900 rounded-lg shadow-sm animate-fadeIn">
+                    <h4 className="font-bold text-lg">Você é assinante do {user.subscription}!</h4>
+                    <p className="mt-2 text-sm md:text-base">
+                        Continue revelando suas memórias conosco. Para alterar seu plano, basta selecionar uma nova opção acima.
+                    </p>
+                </div>
+            )}
+            {!user?.subscription && selectedPlanName === 'Plano Essencial' && (
                 <div className="p-6 bg-blue-50 border-2 border-blue-200 text-blue-900 rounded-lg shadow-sm animate-fadeIn">
                     <h4 className="font-bold text-lg">Excelente para começar sua jornada!</h4>
                     <p className="mt-2 text-sm md:text-base">
@@ -133,7 +156,7 @@ const Plans: React.FC = () => {
                     </p>
                 </div>
             )}
-             {selectedPlanName === 'Plano Clássico' && (
+             {!user?.subscription && selectedPlanName === 'Plano Clássico' && (
                 <div className="p-6 bg-green-50 border-2 border-green-200 text-green-900 rounded-lg shadow-sm animate-fadeIn">
                     <h4 className="font-bold text-lg">A escolha mais popular por um motivo!</h4>
                     <p className="mt-2 text-sm md:text-base">
@@ -141,7 +164,7 @@ const Plans: React.FC = () => {
                     </p>
                 </div>
             )}
-            {selectedPlanName === 'Plano Colecionador' && (
+            {!user?.subscription && selectedPlanName === 'Plano Colecionador' && (
                 <div className="p-6 bg-purple-50 border-2 border-purple-200 text-purple-900 rounded-lg shadow-sm animate-fadeIn">
                     <h4 className="font-bold text-lg">A experiência definitiva para colecionadores!</h4>
                     <p className="mt-2 text-sm md:text-base">

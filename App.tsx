@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import HowItWorks from './components/HowItWorks';
@@ -9,6 +9,13 @@ import Albums from './components/Albums';
 import Testimonials from './components/Testimonials';
 import Faq from './components/Faq';
 import Footer from './components/Footer';
+import { AuthProvider } from './contexts/AuthContext';
+import AuthModal from './components/AuthModal';
+import { CartProvider } from './contexts/CartContext';
+import CartModal from './components/CartModal';
+import PhotoPackageSelector from './components/PhotoPackageSelector';
+import PhotoPackageCreator from './components/PhotoPackageCreator';
+import PhotoPackage15x20Creator from './components/PhotoPackage15x20Creator';
 
 const ScrollToHashElement = () => {
   const location = useLocation();
@@ -25,18 +32,18 @@ const ScrollToHashElement = () => {
           block: 'start',
         });
       }
+    } else {
+        window.scrollTo(0, 0);
     }
   }, [location]);
 
   return null;
 };
 
-const App: React.FC = () => {
-  return (
-    <div className="bg-white font-sans text-brand-text">
-      <ScrollToHashElement />
-      <Header />
-      <main>
+const HomePage = () => (
+  <>
+    <Header />
+    <main>
         <Hero />
         <PhotoFormats />
         <Albums />
@@ -44,9 +51,29 @@ const App: React.FC = () => {
         <Plans />
         <Testimonials />
         <Faq />
-      </main>
-      <Footer />
-    </div>
+    </main>
+    <Footer />
+  </>
+);
+
+
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <div className="bg-white font-sans text-brand-text">
+          <ScrollToHashElement />
+          <AuthModal />
+          <CartModal />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/pacote-foto-imas" element={<PhotoPackageSelector />} />
+            <Route path="/pacote-10x15" element={<PhotoPackageCreator />} />
+            <Route path="/pacote-15x20" element={<PhotoPackage15x20Creator />} />
+          </Routes>
+        </div>
+      </CartProvider>
+    </AuthProvider>
   );
 };
 

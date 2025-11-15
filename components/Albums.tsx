@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { CartContext } from '../contexts/CartContext';
+import { Product } from '../types';
 
 const albums = [
     { name: 'Álbuns NÓRDICOS', image: 'https://www.phosfato.com.br/_ipx/q_80&s_640x640/img/albuns/12.jpeg'},
@@ -21,6 +23,19 @@ const AlbumItem: React.FC<{ album: typeof albums[0] }> = ({ album }) => (
 
 
 const Albums: React.FC = () => {
+    const { addToCart } = useContext(CartContext);
+    
+    const handleBuyAlbum = () => {
+        const defaultAlbum: Product = {
+            id: 'album-nordico',
+            name: 'Álbum NÓRDICO',
+            price: 89.90,
+            image: albums[0].image,
+        };
+        addToCart(defaultAlbum);
+        alert(`${defaultAlbum.name} foi adicionado ao carrinho!`);
+    }
+
     return (
         <section id="albums" className="py-10 md:py-20">
             <div className="container mx-auto px-6">
@@ -35,9 +50,9 @@ const Albums: React.FC = () => {
                             <p className="text-brand-text mb-8">
                                 Álbuns com capacidade de 12 até 500 fotos. Escolha o modelo, a capa e o tamanho que mais combina com você.
                             </p>
-                            <a href="#" className="bg-brand-dark text-white font-bold py-4 px-10 rounded-full text-lg hover:bg-gray-800 transition-colors shadow-lg inline-block">
-                                Conheça nossos Álbuns
-                            </a>
+                            <button onClick={handleBuyAlbum} className="bg-brand-dark text-white font-bold py-4 px-10 rounded-full text-lg hover:bg-gray-800 transition-colors shadow-lg inline-block">
+                                Comprar Álbum NÓRDICO
+                            </button>
                         </div>
                         <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
                             {albums.map((album, index) => (
