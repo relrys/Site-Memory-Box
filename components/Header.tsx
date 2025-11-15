@@ -16,8 +16,9 @@ const Header: React.FC = () => {
             <span className="text-2xl font-extrabold text-brand-dark">Memory Box</span>
           </Link>
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/#how-it-works" className="text-brand-text hover:text-brand-dark font-medium transition-colors">Como Funciona</Link>
-            <Link to="/#plans" className="text-brand-text hover:text-brand-dark font-medium transition-colors">Planos</Link>
+            <Link to="/#formats" className="text-brand-text hover:text-brand-dark font-medium transition-colors">Fotos</Link>
+            <Link to="/#formats" className="text-brand-text hover:text-brand-dark font-medium transition-colors">Foto Ímãs</Link>
+            <Link to="/#albums" className="text-brand-text hover:text-brand-dark font-medium transition-colors">Álbuns</Link>
             <Link to="/#faq" className="text-brand-text hover:text-brand-dark font-medium transition-colors">FAQ</Link>
           </nav>
           <div className="hidden md:flex items-center space-x-4">
